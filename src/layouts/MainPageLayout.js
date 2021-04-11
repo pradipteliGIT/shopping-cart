@@ -4,10 +4,10 @@ import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 
 const MainPageLayout = props => {
-  const { children } = props;
+  const { children, currentUser } = props;
   return (
     <div>
-      <Header />
+      <Header currentUser={currentUser} />
       <div className="main">{children}</div>
       <Footer />
     </div>
@@ -15,5 +15,11 @@ const MainPageLayout = props => {
 };
 MainPageLayout.propTypes = {
   children: PropTypes.element.isRequired,
+  currentUser: PropTypes.object,
 };
+
+MainPageLayout.defaultProps = {
+  currentUser: null,
+};
+
 export default MainPageLayout;

@@ -1,9 +1,10 @@
 import React from 'react';
+import SignUp from '../../components/SignUp/SignUp';
 import './Registration.scss';
 
 const Registration = () => (
   <div>
-    <h1>Registration page</h1>
+    <SignUp />
   </div>
 );
 

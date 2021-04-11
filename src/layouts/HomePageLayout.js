@@ -4,10 +4,10 @@ import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 
 const HomePageLayout = props => {
-  const { children } = props;
+  const { children, currentUser } = props;
   return (
     <div className="full-height">
-      <Header />
+      <Header currentUser={currentUser} />
       {children}
       <Footer />
     </div>
@@ -15,5 +15,10 @@ const HomePageLayout = props => {
 };
 HomePageLayout.propTypes = {
   children: PropTypes.element.isRequired,
+  currentUser: PropTypes.object,
+};
+
+HomePageLayout.defaultProps = {
+  currentUser: null,
 };
 export default HomePageLayout;
