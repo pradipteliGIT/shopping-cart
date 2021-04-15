@@ -4,6 +4,7 @@ import Button from '../Forms/Button/Button';
 import './SignUp.scss';
 import { USER_DETAILS, EMAIL_REGX } from '../../constants/constants';
 import { auth, handleUserProfile } from '../../firebase/utils';
+import AuthWrapper from '../AuthWrapper/AuthWrapper';
 
 class SignUp extends Component {
   constructor(props) {
@@ -55,56 +56,45 @@ class SignUp extends Component {
 
   render() {
     const { displayName, email, password, confirmPassword, errors } = this.state;
+    const authWrapperConfig = { heading: 'Registration' };
     return (
-      <div className="sign-up">
-        <div className="wrap">
-          <h1>Signup</h1>
-          {errors.length > 0 && (
-            <ul>
-              {errors.map(error => (
-                <li key={error}>{error}</li>
-              ))}
-            </ul>
-          )}
-          <div className="form-wrap">
-            <form onSubmit={this.handleSubmit}>
-              <FormInput
-                id="displayName"
-                name="displayName"
-                type="text"
-                value={displayName}
-                placeholder="Full Name"
-                handleChange={this.handleChange}
-              />
-              <FormInput
-                id="email"
-                name="email"
-                type="email"
-                value={email}
-                placeholder="Email"
-                handleChange={this.handleChange}
-              />
-              <FormInput
-                id="password"
-                name="password"
-                type="password"
-                value={password}
-                placeholder="Password"
-                handleChange={this.handleChange}
-              />
-              <FormInput
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                placeholder="Confirm Password"
-                handleChange={this.handleChange}
-              />
-              <Button type="submit">Register</Button>
-            </form>
-          </div>
-        </div>
-      </div>
+      <AuthWrapper {...authWrapperConfig}>
+        {errors.length > 0 && (
+          <ul>
+            {errors.map(error => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        )}
+        <form onSubmit={this.handleSubmit}>
+          <FormInput
+            id="displayName"
+            name="displayName"
+            type="text"
+            value={displayName}
+            placeholder="Full Name"
+            handleChange={this.handleChange}
+          />
+          <FormInput id="email" name="email" type="email" value={email} placeholder="Email" handleChange={this.handleChange} />
+          <FormInput
+            id="password"
+            name="password"
+            type="password"
+            value={password}
+            placeholder="Password"
+            handleChange={this.handleChange}
+          />
+          <FormInput
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            value={confirmPassword}
+            placeholder="Confirm Password"
+            handleChange={this.handleChange}
+          />
+          <Button type="submit">Register</Button>
+        </form>
+      </AuthWrapper>
     );
   }
 }

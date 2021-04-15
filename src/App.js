@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage/HomePage';
 import Registration from './pages/Registration/Registration';
 import PageNotFound from './components/PageNotFound/PageNotFound';
 import Login from './pages/Login/Login';
+import Recovery from './pages/Recovery/Recovery';
 
 const initialState = null;
 function App() {
@@ -71,6 +72,14 @@ function App() {
               </MainPageLayout>
             )
           }
+        />
+        <Route
+          path="/recovery"
+          render={() => (
+            <MainPageLayout currentUser={currentUser}>
+              <Recovery />
+            </MainPageLayout>
+          )}
         />
         <Route
           render={() => (
