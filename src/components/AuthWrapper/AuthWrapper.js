@@ -1,5 +1,5 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes, { element } from 'prop-types';
 import './AuthWrapper.scss';
 
 const AuthWrapper = ({ heading, children }) => (
@@ -10,10 +10,5 @@ const AuthWrapper = ({ heading, children }) => (
     </div>
   </div>
 );
-
-AuthWrapper.propTypes = {
-  heading: PropTypes.string,
-  children: PropTypes.arrayOf(element),
-};
 
 export default AuthWrapper;

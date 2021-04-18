@@ -29,8 +29,9 @@
       li {
         display: inline-block;
         list-style-type: none;
-        &:first-child {
-          margin-right: 15px;
+        margin-right: 15px;
+        &:last-child {
+          margin-right: 0;
         }
         a,
         span {

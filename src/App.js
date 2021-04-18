@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { auth, handleUserProfile } from './firebase/utils';
 import './default.scss';
+// HOC
+import WithAuth from './hoc/WithAuth';
 // Actions
 import { setCurrentUser } from './redux/User/user.actions';
 // Layouts
@@ -15,12 +17,11 @@ import Registration from './pages/Registration/Registration';
 import PageNotFound from './components/PageNotFound/PageNotFound';
 import Login from './pages/Login/Login';
 import Recovery from './pages/Recovery/Recovery';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 function App(props) {
-  const { currentUser } = props;
-  let authListener = null;
   React.useEffect(() => {
-    authListener = auth.onAuthStateChanged(async userAuth => {
+    const authListener = auth.onAuthStateChanged(async userAuth => {
       if (userAuth) {
         // calling utility to update data in db
         const useRef = await handleUserProfile(userAuth);
@@ -53,27 +54,19 @@ function App(props) {
         />
         <Route
           path="/registration"
-          render={() =>
-            currentUser ? (
-              <Redirect to="/" />
-            ) : (
-              <MainPageLayout>
-                <Registration />
-              </MainPageLayout>
-            )
-          }
+          render={() => (
+            <MainPageLayout>
+              <Registration />
+            </MainPageLayout>
+          )}
         />
         <Route
           path="/login"
-          render={() =>
-            currentUser ? (
-              <Redirect to="/" />
-            ) : (
-              <MainPageLayout>
-                <Login />
-              </MainPageLayout>
-            )
-          }
+          render={() => (
+            <MainPageLayout>
+              <Login />
+            </MainPageLayout>
+          )}
         />
         <Route
           path="/recovery"
@@ -81,6 +74,16 @@ function App(props) {
             <MainPageLayout>
               <Recovery />
             </MainPageLayout>
+          )}
+        />
+        <Route
+          path="/dashboard"
+          render={() => (
+            <WithAuth>
+              <MainPageLayout>
+                <Dashboard />
+              </MainPageLayout>
+            </WithAuth>
           )}
         />
         <Route
@@ -95,11 +98,7 @@ function App(props) {
   );
 }
 App.propTypes = {
-  currentUser: PropTypes.object,
   setCurrentUser: PropTypes.func,
-};
-App.defaultProps = {
-  currentUser: null,
 };
 const mapStateToProps = ({ user }) => ({
   currentUser: user.currentUser,
