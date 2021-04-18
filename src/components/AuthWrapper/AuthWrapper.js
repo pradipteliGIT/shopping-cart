@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { element } from 'prop-types';
 import './AuthWrapper.scss';
 
 const AuthWrapper = ({ heading, children }) => (
@@ -13,7 +13,7 @@ const AuthWrapper = ({ heading, children }) => (
 
 AuthWrapper.propTypes = {
   heading: PropTypes.string,
-  children: PropTypes.element,
+  children: PropTypes.arrayOf(element),
 };
 
 export default AuthWrapper;
