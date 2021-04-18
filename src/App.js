@@ -30,8 +30,9 @@ function App(props) {
             ...snapshot.data(),
           });
         });
+      } else {
+        props.setCurrentUser(userAuth);
       }
-      props.setCurrentUser(userAuth);
     });
     return () => {
       // unsubscribes event listener
