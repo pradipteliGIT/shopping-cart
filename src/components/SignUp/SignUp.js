@@ -1,64 +1,59 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import FormInput from '../Forms/FormInput/FormInput';
 import Button from '../Forms/Button/Button';
 import './SignUp.scss';
-import { EMAIL_REGX } from '../../constants/constants';
-import { auth, handleUserProfile } from '../../firebase/utils';
 import AuthWrapper from '../AuthWrapper/AuthWrapper';
+import { resetUserState, signUpUserStart } from '../../redux/User/user.actions';
 
-const SignUp = props => {
+const mapState = ({ user }) => ({
+  currentUser: user.currentUser,
+  userErrors: user.userErrors,
+});
+
+const SignUp = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { currentUser, userErrors } = useSelector(mapState);
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState([]);
 
-  // const reset = () => {
-  //   setDisplayName('');
-  //   setEmail('');
-  //   setPassword('');
-  //   setConfirmPassword('');
-  //   setErrors([]);
-  // };
-
-  const handleSubmit = async event => {
-    event.preventDefault();
-    const errorMessages = [];
-    if (displayName.trim().length === 0) {
-      errorMessages.push('Name required');
-    }
-    if (email.trim().length === 0) {
-      errorMessages.push('Email required');
-    }
-    if (!EMAIL_REGX.test(email)) {
-      errorMessages.push('Invalid Email');
-    }
-    if (password !== confirmPassword) {
-      errorMessages.push('Password and confirm password not matching');
-    }
-
-    if (errorMessages.length > 0) {
-      setErrors(errorMessages);
-      return;
-    }
-    try {
-      // Create user
-      const { user } = await auth.createUserWithEmailAndPassword(email, password);
-      // Add user details using utility function
-      await handleUserProfile(user, { displayName });
-      // reset();
-      props.history.push('/');
-    } catch (err) {
-      console.log(err);
-    }
+  const reset = () => {
+    setDisplayName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setErrors([]);
   };
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    dispatch(signUpUserStart({ displayName, email, password, confirmPassword }));
+  };
+
+  useEffect(() => {
+    if (currentUser) {
+      reset();
+      dispatch(resetUserState());
+      history.push('/');
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (userErrors.length > 0) {
+      setErrors(userErrors);
+    }
+  }, [userErrors]);
 
   const authWrapperConfig = { heading: 'Registration' };
   return (
     <AuthWrapper {...authWrapperConfig}>
-      {errors.length > 0 && (
+      {Array.isArray(errors) && errors.length > 0 && (
         <ul>
           {errors.map(error => (
             <li key={error}>{error}</li>
@@ -103,4 +98,4 @@ const SignUp = props => {
     </AuthWrapper>
   );
 };
-export default withRouter(SignUp);
+export default SignUp;

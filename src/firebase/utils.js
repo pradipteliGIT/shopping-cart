@@ -10,14 +10,12 @@ export const auth = firebase.auth();
 export const fireStore = firebase.firestore();
 
 // Creating provider for login type
-const googleProvider = new firebase.auth.GoogleAuthProvider();
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
 // prompt message to select account
 googleProvider.setCustomParameters({ prompt: 'select_account' });
-// Exporting google sign in method
-export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 // Method to update user data in db
-export const handleUserProfile = async (userAuth, additionalData) => {
+export const handleUserProfile = async ({ userAuth, additionalData }) => {
   if (!userAuth) return;
   // destructors uid
   const { uid } = userAuth;
@@ -35,8 +33,16 @@ export const handleUserProfile = async (userAuth, additionalData) => {
         ...additionalData,
       });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   }
   return useRef;
 };
+
+export const getCurrentUser = () =>
+  new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      unsubscribe();
+      resolve(user);
+    }, reject);
+  });

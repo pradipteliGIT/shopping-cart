@@ -1,36 +1,44 @@
-import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
-import { auth } from '../../firebase/utils';
+/* eslint-disable react/prop-types */
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { resetPasswordStart, resetUserState } from '../../redux/User/user.actions';
 import AuthWrapper from '../AuthWrapper/AuthWrapper';
 import Button from '../Forms/Button/Button';
 import FormInput from '../Forms/FormInput/FormInput';
 
-const EmailPassword = props => {
-  // eslint-disable-next-line react/prop-types
-  const { history } = props;
+const mapState = ({ user }) => ({
+  userErrors: user.userErrors,
+  resetPasswordSuccess: user.resetPasswordSuccess,
+});
+const EmailPassword = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { userErrors, resetPasswordSuccess } = useSelector(mapState);
   const [email, setEmail] = useState('');
   const [errors, setErrors] = useState([]);
   const authWrapperConfig = {
     heading: 'Email Password',
   };
+
   const handleChange = e => {
     setEmail(e.target.value);
   };
+  useEffect(() => {
+    if (resetPasswordSuccess) {
+      dispatch(resetUserState());
+      history.push('/login');
+    }
+  }, [resetPasswordSuccess]);
+
+  useEffect(() => {
+    if (userErrors.length > 0) {
+      setErrors(userErrors);
+    }
+  }, [userErrors]);
   const handleSubmit = async e => {
     e.preventDefault();
-    const config = {
-      url: 'http://localhost:3001/login',
-    };
-    await auth
-      .sendPasswordResetEmail(email, config)
-      .then(() => {
-        // eslint-disable-next-line react/prop-types
-        history.push('/login');
-      })
-      .catch(() => {
-        const err = ['Email not found. Please try again'];
-        setErrors(err);
-      });
+    dispatch(resetPasswordStart({ email }));
   };
   return (
     <AuthWrapper {...authWrapperConfig}>
@@ -49,4 +57,4 @@ const EmailPassword = props => {
   );
 };
 
-export default withRouter(EmailPassword);
+export default EmailPassword;

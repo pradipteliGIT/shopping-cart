@@ -1,34 +1,46 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import { signInWithGoogle, auth } from '../../firebase/utils';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
+import { emailSignInStart, googleSignInStart } from '../../redux/User/user.actions';
 import AuthWrapper from '../AuthWrapper/AuthWrapper';
 import Button from '../Forms/Button/Button';
 import FormInput from '../Forms/FormInput/FormInput';
 import './SignIn.scss';
 
-const SignIn = props => {
+const mapState = ({ user }) => ({
+  currentUser: user.currentUser,
+});
+const SignIn = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { currentUser } = useSelector(mapState);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const reset = () => {
     setEmail('');
     setPassword('');
   };
+
   const handleSubmit = async e => {
     e.preventDefault();
   };
 
-  const handleLogin = async e => {
-    e.preventDefault();
-    try {
-      await auth.signInWithEmailAndPassword(email, password);
+  useEffect(() => {
+    if (currentUser) {
       reset();
-      props.history.push('/');
-    } catch (err) {
-      alert(err.message);
+      history.push('/');
     }
+  }, [currentUser]);
+
+  const handleLogin = e => {
+    e.preventDefault();
+    dispatch(emailSignInStart({ email, password }));
   };
 
+  const handleGoogleSignIn = () => {
+    dispatch(googleSignInStart());
+  };
   const authWrapperConfig = { heading: 'SignIn' };
   return (
     <AuthWrapper {...authWrapperConfig}>
@@ -54,7 +66,7 @@ const SignIn = props => {
       <form onSubmit={handleSubmit}>
         <div className="social-sign-in">
           <div className="row">
-            <Button onClick={signInWithGoogle}>Sign in with google</Button>
+            <Button onClick={handleGoogleSignIn}>Sign in with google</Button>
           </div>
         </div>
       </form>
@@ -64,4 +76,4 @@ const SignIn = props => {
     </AuthWrapper>
   );
 };
-export default withRouter(SignIn);
+export default SignIn;
