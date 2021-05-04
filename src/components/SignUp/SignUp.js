@@ -6,7 +6,7 @@ import FormInput from '../Forms/FormInput/FormInput';
 import Button from '../Forms/Button/Button';
 import './SignUp.scss';
 import AuthWrapper from '../AuthWrapper/AuthWrapper';
-import { resetUserState, signUpUserStart } from '../../redux/User/user.actions';
+import { signUpUserStart } from '../../redux/User/user.actions';
 
 const mapState = ({ user }) => ({
   currentUser: user.currentUser,
@@ -39,7 +39,7 @@ const SignUp = () => {
   useEffect(() => {
     if (currentUser) {
       reset();
-      dispatch(resetUserState());
+      // dispatch(resetUserState());
       history.push('/');
     }
   }, [currentUser]);
